@@ -13,7 +13,7 @@
 
 <script>
 	import myapp from './components/myapp';
-
+console.log(123321);
 	export default {
 		components: {
 			myapp

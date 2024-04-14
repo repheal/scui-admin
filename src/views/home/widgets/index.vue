@@ -1,7 +1,7 @@
 <template>
 	<div :class="['widgets-home', customizing?'customizing':'']" ref="main">
 		<div class="widgets-content">
-			<div class="widgets-top">
+			<!-- <div class="widgets-top">
 				<div class="widgets-top-title">
 					控制台
 				</div>
@@ -9,7 +9,7 @@
 					<el-button v-if="customizing" type="primary" icon="el-icon-check" round @click="save">完成</el-button>
 					<el-button v-else type="primary" icon="el-icon-edit" round @click="custom">自定义</el-button>
 				</div>
-			</div>
+			</div> -->
 			<div class="widgets" ref="widgets">
 				<div class="widgets-wrapper">
 					<div v-if="nowCompsList.length<=0" class="no-widgets">
@@ -92,7 +92,7 @@
 <script>
 	import draggable from 'vuedraggable'
 	import allComps from './components'
-
+	console.log(22222);
 	export default {
 		components: {
 			draggable

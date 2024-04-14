@@ -64,7 +64,8 @@ export default {
 			url: `${config.API_URL}/system/user/list`,
 			name: "获取用户列表",
 			get: async function(params){
-				return await http.get(this.url, params);
+				var tmp = await http.get(this.url, params);
+				return tmp;
 			}
 		}
 	},

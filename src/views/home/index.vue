@@ -1,5 +1,5 @@
 <template>
-	<div v-if="pageLoading">
+	<!-- <div v-if="pageLoading">
 		<el-main>
 			<el-card shadow="never">
 				<el-skeleton :rows="1"></el-skeleton>
@@ -9,8 +9,9 @@
 			</el-card>
 		</el-main>
 	</div>
+	-->
 	<work v-if="dashboard=='1'" @on-mounted="onMounted"></work>
-	<widgets v-else @on-mounted="onMounted"></widgets>
+	<widgets v-else @on-mounted="onMounted"></widgets> 
 </template>
 
 <script>
@@ -27,7 +28,7 @@
 		data(){
 			return {
 				pageLoading: true,
-				dashboard: '0'
+				dashboard: '1'
 			}
 		},
 		created(){
