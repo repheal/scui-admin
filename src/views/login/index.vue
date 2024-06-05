@@ -1,12 +1,12 @@
 <template>
 	<div class="login_bg">
-		<!--
+		
 		<div class="login_adv" style="background-image: url(img/auth_banner.jpg);">
 			<div class="login_adv__title">
-				<h2>SCUI</h2>
+				<h2>欢迎</h2>
 				<h4>{{ $t('login.slogan') }}</h4>
 				<p>{{ $t('login.describe') }}</p>
-				<div>
+				<!-- <div>
 					<span>
 						<el-icon><sc-icon-vue /></el-icon>
 					</span>
@@ -16,13 +16,13 @@
 					<span>
 						<el-icon><el-icon-eleme-filled /></el-icon>
 					</span>
-				</div>
+				</div> -->
 			</div>
 			<div class="login_adv__mask"></div>
 			<div class="login_adv__bottom">
 				© {{$CONFIG.APP_NAME}} {{$CONFIG.APP_VER}}
 			</div>
-		</div> -->
+		</div> 
 		<div class="login_main">
 			<div class="login_config">
 				<el-button :icon="config.dark?'el-icon-sunny':'el-icon-moon'" circle type="info" @click="configDark"></el-button>
@@ -150,7 +150,7 @@
 
 <style scoped>
 	.login_bg {width: 100%;height: 100%;background: #fff;display: flex;}
-	/* .login_adv {width: 33.33333%;background-color: #555;background-size: cover;background-position: center center;background-repeat: no-repeat;position: relative;}
+	.login_adv {width: 33.33333%;background-color: #555;background-size: cover;background-position: center center;background-repeat: no-repeat;position: relative;}
 	.login_adv__title {color: #fff;padding: 40px;position: absolute;top:0px;left:0px;right: 0px;z-index: 2;}
 	.login_adv__title h2 {font-size: 40px;}
 	.login_adv__title h4 {font-size: 18px;margin-top: 10px;font-weight: normal;}
@@ -160,7 +160,7 @@
 	.login_adv__title div i {font-size: 40px;}
 	.login_adv__title div i.add {font-size: 20px;color: rgba(255,255,255,0.6);}
 	.login_adv__bottom {position: absolute;left:0px;right: 0px;bottom: 0px;color: #fff;padding: 40px;background-image:linear-gradient(transparent, #000);z-index: 3;}
-	.login_adv__mask {position: absolute;top:0px;left:0px;right: 0px;bottom: 0px;background: rgba(0,0,0,0.5);z-index: 1;} */
+	.login_adv__mask {position: absolute;top:0px;left:0px;right: 0px;bottom: 0px;background: rgba(0,0,0,0.5);z-index: 1;} 
 
 	.login_main {flex: 1;overflow: auto;display:flex;}
 	.login-form {width: 400px;margin: auto;padding:20px 0;}
