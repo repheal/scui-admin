@@ -24,6 +24,7 @@
 		<el-form-item>
 			<el-button type="primary" style="width: 100%;" :loading="islogin" round @click="login">{{ $t('login.signIn') }}</el-button>
 		</el-form-item>
+		<Vcode :show="isShow" @success="success" @close="close" @fail="fail" :imgs="[Img]"></Vcode>
 		<!-- <div class="login-reg">
 			{{$t('login.noAccount')}} <router-link to="/user_register">{{$t('login.createAccount')}}</router-link>
 		</div> -->
@@ -31,6 +32,13 @@
 </template>
 
 <script>
+
+import Img from '@/assets/img/verifycode.png'
+import Vcode from 'vue3-puzzle-vcode'
+import { ref } from 'vue'
+console.log(Vcode)
+const isShow = ref(false)
+
 	export default {
 		data() {
 			return {
@@ -49,6 +57,8 @@
 					]
 				},
 				islogin: false,
+				Img:Img,
+				isShow:isShow,
 			}
 		},
 		watch:{
@@ -66,8 +76,8 @@
 
 		},
 		methods: {
-			async login(){
-
+			async success(){
+				isShow.value = false
 				var validate = await this.$refs.loginForm.validate().catch(()=>{})
 				if(!validate){ return false }
 
@@ -118,7 +128,20 @@
 				})
 				this.$message.success("Login Success 登录成功")
 				this.islogin = false
+				console.log('验证通过')
 			},
+			async close(){
+				isShow.value = true
+			},
+			async fail(){
+				console.log('验证失败')
+			},
+			async login(){
+				isShow.value = true
+			},
+		},
+		components: {
+			Vcode,
 		}
 	}
 </script>
