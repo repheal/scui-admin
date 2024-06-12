@@ -92,7 +92,6 @@
 <script>
 	import draggable from 'vuedraggable'
 	import allComps from './components'
-	console.log(22222);
 	export default {
 		components: {
 			draggable

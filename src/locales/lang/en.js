@@ -9,7 +9,7 @@ export default {
 		forgetPassword: 'Forget password',
 		signIn: 'Sign in',
 		signInOther: 'Sign in with',
-		userPlaceholder: 'user / phone / email',
+		userPlaceholder: 'user',// / phone / email
 		userError: 'Please input a user name',
 		PWPlaceholder: 'Please input a password',
 		PWError: 'Please input a password',
@@ -35,5 +35,8 @@ export default {
 		nightmode_msg: 'Suitable for low light environment,The current night mode is beta',
 		language: 'language',
 		language_msg: 'Translation in progress,Temporarily translated the text of this view',
+	},
+	auth:{
+		expire_timeout: 'expire timeout'
 	}
 }

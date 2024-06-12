@@ -137,6 +137,7 @@
 						type: 'info',
 					}).then(() => {
 						const loading = this.$loading()
+						this.$TOOL.cookie.remove("TOKEN")
 						this.$TOOL.data.clear()
 						this.$router.replace({path: '/login'})
 						setTimeout(()=>{
@@ -153,6 +154,7 @@
 						confirmButtonText: '退出',
 						confirmButtonClass: 'el-button--danger'
 					}).then(() => {
+						this.$TOOL.cookie.remove("TOKEN")
 						this.$router.replace({path: '/login'});
 					}).catch(() => {
 						//取消退出

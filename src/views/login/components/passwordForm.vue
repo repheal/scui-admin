@@ -42,11 +42,10 @@ const isShow = ref(false)
 	export default {
 		data() {
 			return {
-				userType: 'admin',
 				form: {
-					user: "admin",
-					password: "admin",
-					autologin: false
+					user: "",
+					password: "",
+					autologin: true
 				},
 				rules: {
 					user: [
@@ -62,15 +61,7 @@ const isShow = ref(false)
 			}
 		},
 		watch:{
-			userType(val){
-				if(val == 'admin'){
-					this.form.user = 'admin'
-					this.form.password = 'admin'
-				}else if(val == 'user'){
-					this.form.user = 'user'
-					this.form.password = 'user'
-				}
-			}
+		
 		},
 		mounted() {
 
@@ -84,18 +75,44 @@ const isShow = ref(false)
 				this.islogin = true
 				var data = {
 					username: this.form.user,
-					password: this.$TOOL.crypto.MD5(this.form.password)
+					//password: this.$TOOL.crypto.MD5(this.form.password)
+					password: this.$TOOL.crypto.AES.encrypt(this.form.password,'12345678')
 				}
 				//获取token
-				var user = await this.$API.auth.token.post(data)
-				if(user.code == 200){
-					this.$TOOL.cookie.set("TOKEN", user.data.token, {
-						expires: this.form.autologin? 24*60*60 : 0
+				var ret = await this.$API.auth.token.post(data)
+				ret.error_code = 4 //先写死这个code
+				ret.result.user.expire_date = '2024-07-01'
+				ret.result.user.access_token = 'qqqqqqqqqqqq'
+				if( [0,4].includes(ret.error_code) && ret.result){
+					if(new Date(ret.result.user.expire_date).getTime() < new Date().getTime())
+					{
+						this.islogin = false
+						this.$message.error(this.$i18n.messages[this.$i18n.locale].auth.expire_timeout)
+						return false
+					}
+					// 计算时间戳之间的差值
+					const difference = Math.abs(new Date(ret.result.user.expire_date).getTime() - new Date().getTime())
+					// 将差值转换为秒
+					const sec = Math.floor(difference / 1000);
+					this.$TOOL.cookie.set("TOKEN", ret.result.user.access_token, {
+						expires: this.form.autologin ? sec : 0
 					})
-					this.$TOOL.data.set("USER_INFO", user.data.userInfo)
-				}else{
+					
+					this.$TOOL.data.set("USER_INFO", ret.result)
+					if(ret.error_code == 4)
+					{
+						this.$TOOL.data.set("CODE", ret.error_code)
+					}					
+				}else{					
 					this.islogin = false
-					this.$message.warning(user.message)
+					this.$message.error(ret.error_message)
+					if(ret.error_code == 5)
+					{
+						this.$router.replace({
+							path: '/reset_password'
+						})
+					}
+					
 					return false
 				}
 				//获取菜单

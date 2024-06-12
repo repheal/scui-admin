@@ -18,10 +18,10 @@ const DEFAULT_CONFIG = {
 	TIMEOUT: 10000,
 
 	//TokenName
-	TOKEN_NAME: "Authorization",
+	TOKEN_NAME: "access_token",//Authorization
 
 	//Token前缀，注意最后有个空格，如不需要需设置空字符串
-	TOKEN_PREFIX: "Bearer ",
+	TOKEN_PREFIX: "",
 
 	//追加其他头
 	HEADERS: {},
@@ -49,7 +49,7 @@ const DEFAULT_CONFIG = {
 	COLOR: '',
 
 	//是否加密localStorage, 为空不加密，可填写AES(模式ECB,移位Pkcs7)加密
-	LS_ENCRYPTION: '',
+	LS_ENCRYPTION: 'AES',
 
 	//localStorageAES加密秘钥，位数建议填写8的倍数
 	LS_ENCRYPTION_key: '2XNN4K8LC0ELVWN4',

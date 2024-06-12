@@ -107,6 +107,13 @@ tool.cookie = {
 			return null
 		}
 	},
+	getExpires(name){
+		// const cookies = document.cookie
+
+
+		// return null; // 未找到指定的 cookie 或未设置有效期
+
+	},
 	remove(name){
 		var exp = new Date()
 		exp.setTime(exp.getTime() - 1)
@@ -202,7 +209,7 @@ tool.crypto = {
 			}
 			const result = CryptoJS.AES.encrypt(data, CryptoJS.enc.Utf8.parse(secretKey), {
 				iv: CryptoJS.enc.Utf8.parse(config.iv || ""),
-				mode: CryptoJS.mode[config.mode || "ECB"],
+				mode: CryptoJS.mode[config.mode || "CBC"],
 				padding: CryptoJS.pad[config.padding || "Pkcs7"]
 			})
 			return result.toString()
@@ -210,7 +217,7 @@ tool.crypto = {
 		decrypt(cipher, secretKey, config={}){
 			const result = CryptoJS.AES.decrypt(cipher, CryptoJS.enc.Utf8.parse(secretKey), {
 				iv: CryptoJS.enc.Utf8.parse(config.iv || ""),
-				mode: CryptoJS.mode[config.mode || "ECB"],
+				mode: CryptoJS.mode[config.mode || "CBC"],
 				padding: CryptoJS.pad[config.padding || "Pkcs7"]
 			})
 			return CryptoJS.enc.Utf8.stringify(result);
