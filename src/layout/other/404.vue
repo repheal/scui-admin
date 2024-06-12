@@ -17,12 +17,14 @@
 	export default {
 		methods: {
 			gohome(){
+				this.$TOOL.cookie.remove("TOKEN")
 				location.href="#/"
 			},
 			goback(){
 				this.$router.go(-1);
 			},
 			gologin(){
+				this.$TOOL.cookie.remove("TOKEN")
 				this.$router.push("/login");
 			}
 		}

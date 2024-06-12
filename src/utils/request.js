@@ -12,10 +12,10 @@ axios.defaults.timeout = sysConfig.TIMEOUT
 axios.interceptors.request.use(
 	(config) => {
 		let token = tool.cookie.get("TOKEN")
-		console.log(token)
 		if(token){
+			let current_site = tool.data.get("CURRENT_SITE")
 			config.headers[sysConfig.TOKEN_NAME] = sysConfig.TOKEN_PREFIX + token
-			config.headers['site_id'] 	= 0
+			config.headers['site_id'] 	= current_site.site_id
 		}
 		if(!sysConfig.REQUEST_CACHE && config.method == 'get'){
 			config.params = config.params || {};
@@ -35,6 +35,18 @@ let MessageBox_401_show = false
 // HTTP response 拦截器
 axios.interceptors.response.use(
 	(response) => {
+		if(typeof response.data.error_code !== 'undefined')
+		{
+			if(response.data.error_code == 3)
+			{
+				tool.cookie.remove("TOKEN")
+				router.replace({path: '/login'})				
+			}
+			if(response.data.error_code == 4)
+			{
+				router.replace({path: '/reset_password'})
+			}
+		}
 		return response;
 	},
 	(error) => {

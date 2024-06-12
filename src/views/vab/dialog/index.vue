@@ -14,6 +14,7 @@
 			<el-button type="primary" @click="open1">默认</el-button>
 			<el-button type="primary" @click="open2">加载</el-button>
 			<el-button type="primary" @click="open3">禁止拖拽最大化和关闭</el-button>
+			<el-button type="primary" @click="open4">倒计时</el-button>
 		</el-card>
 		<el-card shadow="never" header="异步" style="margin-top: 15px;">
 			<el-button type="primary" @click="asyn1">异步加载1</el-button>
@@ -28,6 +29,11 @@
 			<el-button @click="dialog1 = false">取 消</el-button>
 			<el-button type="primary" @click="dialog1 = false">确 定</el-button>
 		</template>
+	</sc-dialog>
+
+	
+	<sc-dialog v-model="dialog4" draggable title="提示" :visible.sync="dialog4" :before-close="handleClose">
+		<span>这个对话框将在 {{ countdown }} 秒后自动关闭</span>
 	</sc-dialog>
 
 	<sc-dialog v-model="dialog2" draggable title="模拟加载" :width="400" :loading="dialog2Loading">
@@ -58,16 +64,20 @@
 		name: 'dialogExtend',
 		components: {
 			dialog1: defineAsyncComponent(() => import("./dialog1")),
-			dialog2: defineAsyncComponent(() => import("./dialog2"))
+			dialog2: defineAsyncComponent(() => import("./dialog2")),
+		//	dialog4: defineAsyncComponent(() => import("./dialog4"))
 		},
 		data() {
 			return {
 				dialog1: false,
 				dialog2: false,
 				dialog3: false,
+				dialog4: false,
 				dialog2Loading: false,
 				asynDialog1: false,
 				asynDialog2: false,
+				count: 10, // 初始倒计时秒数
+				timer: null, // 计时器
 			}
 		},
 		mounted() {
@@ -87,13 +97,66 @@
 			open3(){
 				this.dialog3 = true
 			},
+			open4(){
+				this.dialog4 = true
+				if(this.count<0)
+				{
+					this.count = 10
+				}
+				this.startCountdown()
+			},
 			asyn1(){
 				this.asynDialog1 = true
 			},
 			asyn2(){
 				this.asynDialog2 = true
-			}
-		}
+			},
+
+
+			handleClose(done) {
+				this.clearTimer();
+				done();
+			},
+			startCountdown() {
+				if (this.timer) {
+					return;
+				}
+				this.timer = setInterval(() => {
+				if (this.count > 0) {
+					this.count--;
+				}
+				}, 1000);
+			},
+			clearTimer() {
+				if (this.timer) {
+				clearInterval(this.timer);
+				this.timer = null;
+				}
+			},
+		},
+		computed: {
+			countdown() {
+				return this.count > 0 ? this.count : '关闭';
+			},
+		},
+		watch: {
+			dialog4(newVal) {
+				if (newVal) {
+				this.startCountdown();
+				} else {
+				this.clearTimer();
+				}
+			},
+			count(newVal) {
+				if (newVal <= 0) {
+				this.dialog4 = false;
+				}
+			},
+		},
+
+		beforeDestroy() {
+			this.clearTimer();
+		},
 	}
 </script>
 
