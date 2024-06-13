@@ -89,17 +89,20 @@ const isShow = ref(false)
 			async success(){
 				isShow.value = false
 				this.islogin = true
+				const timestamp = Math.round(new Date().getTime() / 1000)//10位当前时间戳
+				
 				var data = {
 					username: this.form.user,
 					//password: this.$TOOL.crypto.MD5(this.form.password)
-					password: this.$TOOL.crypto.AES.encrypt(this.form.password,'12345678')
+					password: this.$TOOL.httpvalue.AES.encrypt(this.form.password,'password',timestamp,this.form.user)
 				}
+				
 				//获取token
 				var ret = await this.$API.auth.token.post(data)
-				ret.error_code = 0 //先写死这个code
-				ret.result.user.expire_date = '2024-07-01'
-				ret.result.user.access_token = 'qqqqqqqqqqqq'
-				ret.result.user.reset_pwd = 0
+				// ret.error_code = 0 //先写死这个code
+				// ret.result.user.expire_date = '2024-07-01'
+				// ret.result.user.access_token = 'qqqqqqqqqqqq'
+				// ret.result.user.reset_pwd = 0
 				if( [0].includes(ret.error_code) && ret.result){
 					if(new Date(ret.result.user.expire_date).getTime() < new Date().getTime())
 					{
@@ -133,7 +136,7 @@ const isShow = ref(false)
 						//可不处理
 							break
 					}
-				}else{					
+				}else{		
 					this.islogin = false
 					this.$message.error(ret.error_message)
 					if(ret.error_code == 4)

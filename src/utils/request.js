@@ -17,6 +17,10 @@ axios.interceptors.request.use(
 			config.headers[sysConfig.TOKEN_NAME] = sysConfig.TOKEN_PREFIX + token
 			config.headers['site_id'] 	= current_site.site_id
 		}
+		if(['post','put','delete'].includes(config.method))
+		{
+			config.headers['Content-Type'] 	= 'multipart/form-data'
+		}
 		if(!sysConfig.REQUEST_CACHE && config.method == 'get'){
 			config.params = config.params || {};
 			config.params['_'] = new Date().getTime();

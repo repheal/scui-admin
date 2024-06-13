@@ -218,4 +218,70 @@ tool.crypto = {
 	}
 }
 
+
+/* httpvalue传输过程中加解密 */
+tool.httpvalue = {
+	//AES加解密
+	AES: {
+		encrypt(value,param,timestamp,username){
+			value='Qwer@1234'
+			param='password'
+			timestamp=1718289431
+			username='admin'
+
+			const paddingChar = '\0'; // 填充字符为`\0`
+			var iv = ''
+			var key = ''
+			if (username.length > 8) {
+				iv = username.substr(0, 8).toString() + timestamp.toString().substr(0, 8)
+			  } else if (username.length < 8) {
+				var usernamePaddingLength = 8 - username.length;
+				iv = username + paddingChar.repeat(usernamePaddingLength) + timestamp.toString().substr(0, 8)
+			  } else {
+				iv = username + timestamp.toString().substr(0, 8)
+			  }
+
+			  if (param.length > 8) {
+				key = param.substr(0, 8).toString() + timestamp.toString().substr(0, 8)
+			  } else if (param.length < 8) {
+				var paramPaddingLength = 8 - param.length;
+				key = param + paddingChar.repeat(paramPaddingLength) + timestamp.toString().substr(0, 8)
+			  } else {
+				key = param + timestamp.toString().substr(0, 8)
+			  }
+
+			// var targetLength = Math.ceil(value.length / 16) * 16 // 目标长度为16的倍数
+			// var currentLength = value.length
+			// var paddingLength = targetLength - currentLength
+			//  	value = value + paddingChar.repeat(paddingLength)
+			
+
+			  key = CryptoJS.enc.Utf8.parse(key); // 替换为你的密钥
+			  iv  = CryptoJS.enc.Utf8.parse(iv); // 替换为你的初始向量
+			// // AES加密
+			// console.log(1111,key,iv,value)
+			 var encrypted = CryptoJS.AES.encrypt(value, key, { 
+				iv: iv, 
+				mode: CryptoJS.mode.CBC,
+				padding: CryptoJS.pad.Pkcs7
+			});
+console.log(encrypted)
+console.log(encrypted.toString())
+
+
+return encrypted.toString()
+
+
+		},
+		decrypt(cipher, secretKey, config={}){
+			const result = CryptoJS.AES.decrypt(cipher, CryptoJS.enc.Utf8.parse(secretKey), {
+				iv: CryptoJS.enc.Utf8.parse(config.iv || ""),
+				mode: CryptoJS.mode[config.mode || "CBC"],
+				padding: CryptoJS.pad[config.padding || "Pkcs7"]
+			})
+			return CryptoJS.enc.Utf8.stringify(result);
+		}
+	}
+}
+
 export default tool
