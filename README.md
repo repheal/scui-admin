@@ -1,11 +1,3 @@
-
-| 类型 | 链接 |
-| -------- | -------- |
-| 文档地址 | https://lolicode.gitee.io/scui-doc/ |
-| 演示地址  | https://lolicode.gitee.io/scui-doc/demo/#/login |
-
-
-
 ## 特点
 
 - **组件** 多个独家组件、业务模板
