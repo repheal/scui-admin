@@ -11,7 +11,7 @@ export default {
 		signInOther: '其他登录方式',
 		userPlaceholder: '用户名',// / 手机 / 邮箱
 		userError: '请输入用户名',
-		PWPlaceholder: '请输入密码',
+		PWPlaceholder: '密码',
 		PWError: '请输入密码',
 		admin: '管理员',
 		user: '用户',
