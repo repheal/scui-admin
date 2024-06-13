@@ -107,13 +107,6 @@ tool.cookie = {
 			return null
 		}
 	},
-	getExpires(name){
-		// const cookies = document.cookie
-
-
-		// return null; // 未找到指定的 cookie 或未设置有效期
-
-	},
 	remove(name){
 		var exp = new Date()
 		exp.setTime(exp.getTime() - 1)

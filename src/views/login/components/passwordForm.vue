@@ -118,19 +118,20 @@ const isShow = ref(false)
 						case 0:
 						// 可不处理
 						this.goToHome(ret)
+						break
 						case 1:
 							this.tmpRet = ret
-						this.openTimer()
+							this.openTimer()
 						break
 						// 以错误模式提示
 						case 2:
+							this.goToHome(ret)
 						break
 						// 以警告模式提示
-						break;
 						default:
-						this.goToHome(ret)
+							this.goToHome(ret)
 						//可不处理
-							break;
+							break
 					}
 				}else{					
 					this.islogin = false

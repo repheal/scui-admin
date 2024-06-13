@@ -32,7 +32,7 @@
 	</sc-dialog>
 
 	
-	<sc-dialog v-model="dialog4" draggable title="提示" :visible.sync="dialog4" :before-close="handleClose">
+	<sc-dialog v-model="dialog4" draggable title="提示">
 		<span>这个对话框将在 {{ countdown }} 秒后自动关闭</span>
 	</sc-dialog>
 
@@ -133,6 +133,9 @@
 				this.timer = null;
 				}
 			},
+			beforeDestroy() {
+				this.clearTimer();
+			},
 		},
 		computed: {
 			countdown() {
@@ -152,10 +155,6 @@
 				this.dialog4 = false;
 				}
 			},
-		},
-
-		beforeDestroy() {
-			this.clearTimer();
 		},
 	}
 </script>
