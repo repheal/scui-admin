@@ -96,7 +96,9 @@ const isShow = ref(false)
 					//password: this.$TOOL.crypto.MD5(this.form.password)
 					password: this.$TOOL.httpvalue.AES.encrypt(this.form.password,'password',timestamp,this.form.user)
 				}
-				
+				alert(data.password)
+				console.log(this.$TOOL.httpvalue.AES.decrypt(data.password,'password',timestamp,this.form.user))
+
 				//获取token
 				var ret = await this.$API.auth.token.post(data)
 				console.log(ret)

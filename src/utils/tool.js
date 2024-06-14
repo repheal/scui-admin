@@ -252,10 +252,6 @@ tool.httpvalue = {
 				key = param + timestamp.toString().substr(0, 8)
 			  }
 
-			// var targetLength = Math.ceil(value.length / 16) * 16 // 目标长度为16的倍数
-			// var currentLength = value.length
-			// var paddingLength = targetLength - currentLength
-			//  	value = value + paddingChar.repeat(paddingLength)
 			value = CryptoJS.enc.Utf8.parse(value);
 
 			  key = CryptoJS.enc.Utf8.parse(key); // 替换为你的密钥
@@ -275,13 +271,36 @@ tool.httpvalue = {
 
 
 		},
-		decrypt(cipher, secretKey, config={}){
-			const result = CryptoJS.AES.decrypt(cipher, CryptoJS.enc.Utf8.parse(secretKey), {
-				iv: CryptoJS.enc.Utf8.parse(config.iv || ""),
-				mode: CryptoJS.mode[config.mode || "CBC"],
-				padding: CryptoJS.pad[config.padding || "Pkcs7"]
+		decrypt(cipher,param,timestamp,username){
+			const paddingChar = '\0'; // 填充字符为`\0`
+			var iv = ''
+			var key = ''
+			if (username.length > 8) {
+				iv = username.substr(0, 8).toString() + timestamp.toString().substr(0, 8)
+			  } else if (username.length < 8) {
+				var usernamePaddingLength = 8 - username.length;
+				iv = username + paddingChar.repeat(usernamePaddingLength) + timestamp.toString().substr(0, 8)
+			  } else {
+				iv = username + timestamp.toString().substr(0, 8)
+			  }
+
+			  if (param.length > 8) {
+				key = param.substr(0, 8).toString() + timestamp.toString().substr(0, 8)
+			  } else if (param.length < 8) {
+				var paramPaddingLength = 8 - param.length;
+				key = param + paddingChar.repeat(paramPaddingLength) + timestamp.toString().substr(0, 8)
+			  } else {
+				key = param + timestamp.toString().substr(0, 8)
+			  }
+			  
+			const decrypt = CryptoJS.AES.decrypt(cipher, key, {
+				iv: iv,
+				mode: CryptoJS.mode.CBC,
+				padding: CryptoJS.pad.ZeroPadding
 			})
-			return CryptoJS.enc.Utf8.stringify(result);
+			//var decryptStr = decrypt.toString(CryptoJS.enc.Utf8)
+			
+			return decrypt.toString()
 		}
 	}
 }
