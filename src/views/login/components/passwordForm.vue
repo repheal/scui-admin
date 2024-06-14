@@ -99,6 +99,7 @@ const isShow = ref(false)
 				
 				//获取token
 				var ret = await this.$API.auth.token.post(data)
+				console.log(ret)
 				// ret.error_code = 0 //先写死这个code
 				// ret.result.user.expire_date = '2024-07-01'
 				// ret.result.user.access_token = 'qqqqqqqqqqqq'

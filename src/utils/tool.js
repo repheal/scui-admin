@@ -224,10 +224,12 @@ tool.httpvalue = {
 	//AES加解密
 	AES: {
 		encrypt(value,param,timestamp,username){
+/*
 			value='Qwer@1234'
 			param='password'
 			timestamp=1718289431
 			username='admin'
+*/
 
 			const paddingChar = '\0'; // 填充字符为`\0`
 			var iv = ''
@@ -254,7 +256,7 @@ tool.httpvalue = {
 			// var currentLength = value.length
 			// var paddingLength = targetLength - currentLength
 			//  	value = value + paddingChar.repeat(paddingLength)
-			
+			value = CryptoJS.enc.Utf8.parse(value);
 
 			  key = CryptoJS.enc.Utf8.parse(key); // 替换为你的密钥
 			  iv  = CryptoJS.enc.Utf8.parse(iv); // 替换为你的初始向量
@@ -263,13 +265,13 @@ tool.httpvalue = {
 			 var encrypted = CryptoJS.AES.encrypt(value, key, { 
 				iv: iv, 
 				mode: CryptoJS.mode.CBC,
-				padding: CryptoJS.pad.Pkcs7
+				padding: CryptoJS.pad.ZeroPadding
 			});
-console.log(encrypted)
-console.log(encrypted.toString())
-
-
-return encrypted.toString()
+			//console.log(encrypted)
+			//console.log(encrypted.toString())
+			
+			
+			return encrypted.toString()
 
 
 		},
