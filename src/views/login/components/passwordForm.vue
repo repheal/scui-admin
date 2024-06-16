@@ -89,19 +89,20 @@ const isShow = ref(false)
 			async success(){
 				isShow.value = false
 				this.islogin = true
-				const timestamp = Math.round(new Date().getTime() / 1000)//10位当前时间戳
+			//	const timestamp = Math.round(new Date().getTime() / 1000)//10位当前时间戳
 				
 				var data = {
 					username: this.form.user,
 					//password: this.$TOOL.crypto.MD5(this.form.password)
-					password: this.$TOOL.httpvalue.AES.encrypt(this.form.password,'password',timestamp,this.form.user)
+					password: this.$TOOL.httpvalue.AES.encrypt(this.form.password,'password'),
 				}
-				alert(data.password)
-				console.log(this.$TOOL.httpvalue.AES.decrypt(data.password,'password',timestamp,this.form.user))
+
+			//	alert(data.password)
+			//	
 
 				//获取token
 				var ret = await this.$API.auth.token.post(data)
-				console.log(ret)
+				// console.log(ret)
 				// ret.error_code = 0 //先写死这个code
 				// ret.result.user.expire_date = '2024-07-01'
 				// ret.result.user.access_token = 'qqqqqqqqqqqq'
@@ -113,13 +114,6 @@ const isShow = ref(false)
 						this.$message.error(this.$i18n.messages[this.$i18n.locale].auth.expire_timeout)
 						return false
 					}
-					if(ret.result.user.reset_pwd == 1)
-					{
-						this.$router.replace({
-							path: '/reset_password'
-						})
-					}
-					ret.result.auth.expire_status=1
 					switch(ret.result.auth.expire_status) {
 						case 0:
 						// 可不处理
@@ -167,9 +161,21 @@ const isShow = ref(false)
 				this.$TOOL.cookie.set("TOKEN", ret.result.user.access_token, {
 					expires: this.form.autologin ? sec : 0
 				})
+
 				this.$TOOL.data.set("USER_INFO", ret.result)
 				this.$TOOL.data.set("CURRENT_SITE", ret.result.user.site_app_auth[0])
 
+				console.log('------'+this.form.password)
+				console.log(this.$TOOL.httpvalue.AES.decrypt(this.form.password,'password',0,0))
+
+				ret.result.user.reset_pwd = 0
+				if(ret.result.user.reset_pwd == 1)
+				{
+					this.$router.replace({
+						path: '/reset_password'
+					})
+					return false
+				}
 				//获取菜单
 				var menu = null
 				if(this.form.user == 'admin'){
@@ -186,9 +192,12 @@ const isShow = ref(false)
 						})
 						return false
 					}
+
+					var tmpPermissions = ["list.add","list.edit","list.delete","user.add","user.edit","user.delete"]
+					var tmpDashboardGrid = ["welcome","ver","time","progress","echarts","about"]
 					this.$TOOL.data.set("MENU", menu.data.menu)
-					this.$TOOL.data.set("PERMISSIONS", menu.data.permissions)
-					this.$TOOL.data.set("DASHBOARDGRID", menu.data.dashboardGrid)
+					this.$TOOL.data.set("PERMISSIONS",tmpPermissions)// menu.data.permissions
+					this.$TOOL.data.set("DASHBOARDGRID",tmpDashboardGrid)//menu.data.dashboardGrid
 				}else{
 					this.islogin = false
 					this.$message.warning(menu.message)

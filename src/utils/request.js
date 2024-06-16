@@ -15,7 +15,7 @@ axios.interceptors.request.use(
 		if(token){
 			let current_site = tool.data.get("CURRENT_SITE")
 			config.headers[sysConfig.TOKEN_NAME] = sysConfig.TOKEN_PREFIX + token
-			config.headers['site_id'] 	= current_site.site_id
+			config.headers['site_id'] 			 = current_site.site_id
 		}
 		if(['post','put','delete'].includes(config.method))
 		{

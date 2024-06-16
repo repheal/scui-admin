@@ -218,89 +218,81 @@ tool.crypto = {
 	}
 }
 
+/*截取字符并补位*/
+tool.getBytesByLength =  function (key, padding, begin = 0, length = 16) {
+	let keyLength = key.length;
+	if (keyLength >= length) {
+	  return key.slice(0, length);
+	}
+	let paddingLength = padding.length;
+	let paddingIndex = begin;
+	while (keyLength < length) {
+	  let paddingChar = padding[paddingIndex % paddingLength];
+	  if (keyLength === 0 && paddingChar === "0") {
+		paddingIndex++;
+		continue;
+	  }
+	  key += paddingChar;
+	  paddingIndex++;
+	  keyLength++;
+	}
+	return key;
+}
 
 /* httpvalue传输过程中加解密 */
 tool.httpvalue = {
 	//AES加解密
 	AES: {
-		encrypt(value,param,timestamp,username){
-/*
-			value='Qwer@1234'
-			param='password'
-			timestamp=1718289431
-			username='admin'
-*/
-
-			const paddingChar = '\0'; // 填充字符为`\0`
-			var iv = ''
-			var key = ''
-			if (username.length > 8) {
-				iv = username.substr(0, 8).toString() + timestamp.toString().substr(0, 8)
-			  } else if (username.length < 8) {
-				var usernamePaddingLength = 8 - username.length;
-				iv = username + paddingChar.repeat(usernamePaddingLength) + timestamp.toString().substr(0, 8)
-			  } else {
-				iv = username + timestamp.toString().substr(0, 8)
-			  }
-
-			  if (param.length > 8) {
-				key = param.substr(0, 8).toString() + timestamp.toString().substr(0, 8)
-			  } else if (param.length < 8) {
-				var paramPaddingLength = 8 - param.length;
-				key = param + paddingChar.repeat(paramPaddingLength) + timestamp.toString().substr(0, 8)
-			  } else {
-				key = param + timestamp.toString().substr(0, 8)
-			  }
-
-			value = CryptoJS.enc.Utf8.parse(value);
-
-			  key = CryptoJS.enc.Utf8.parse(key); // 替换为你的密钥
-			  iv  = CryptoJS.enc.Utf8.parse(iv); // 替换为你的初始向量
-			// // AES加密
-			// console.log(1111,key,iv,value)
+		encrypt(value,param,userid = 0,access_token = 0){
+			if(!access_token)
+			{
+				var currentDate = new Date()
+				access_token = tool.dateFormat(currentDate,'yyyyMMdd')
+				userid = userid.toString()
+			}
+			var key = tool.getBytesByLength(param,access_token,param.length)
+			var iv  = tool.getBytesByLength(userid,access_token,userid % 16)
+			  	value = CryptoJS.enc.Utf8.parse(value)
+			  	key = CryptoJS.enc.Utf8.parse(key) // 替换为你的密钥
+			  	iv  = CryptoJS.enc.Utf8.parse(iv) // 替换为你的初始向量
+			//  console.log(1111,key.toString(),iv.toString(),value.toString())
 			 var encrypted = CryptoJS.AES.encrypt(value, key, { 
 				iv: iv, 
 				mode: CryptoJS.mode.CBC,
 				padding: CryptoJS.pad.ZeroPadding
-			});
-			//console.log(encrypted)
-			//console.log(encrypted.toString())
-			
-			
+			})
+			console.log(encrypted.toString())
 			return encrypted.toString()
-
-
 		},
-		decrypt(cipher,param,timestamp,username){
-			const paddingChar = '\0'; // 填充字符为`\0`
-			var iv = ''
-			var key = ''
-			if (username.length > 8) {
-				iv = username.substr(0, 8).toString() + timestamp.toString().substr(0, 8)
-			  } else if (username.length < 8) {
-				var usernamePaddingLength = 8 - username.length;
-				iv = username + paddingChar.repeat(usernamePaddingLength) + timestamp.toString().substr(0, 8)
-			  } else {
-				iv = username + timestamp.toString().substr(0, 8)
-			  }
+		decrypt(value,param,userid = 0,access_token = 0){
+			if(userid !== 0)
+			{
+				var userinfo = tool.data.get('USER_INFO')
+				console.log(userinfo)
+				access_token = userinfo.user.access_token
+				userid 		 = userinfo.user.id
+			}
+			else
+			{
+				var currentDate = new Date()
+				access_token = tool.dateFormat(currentDate,'yyyyMMdd')
+				userid = userid.toString()
+			}
 
-			  if (param.length > 8) {
-				key = param.substr(0, 8).toString() + timestamp.toString().substr(0, 8)
-			  } else if (param.length < 8) {
-				var paramPaddingLength = 8 - param.length;
-				key = param + paddingChar.repeat(paramPaddingLength) + timestamp.toString().substr(0, 8)
-			  } else {
-				key = param + timestamp.toString().substr(0, 8)
-			  }
-			  
-			const decrypt = CryptoJS.AES.decrypt(cipher, key, {
+			var key = tool.getBytesByLength(param,access_token,param.length)
+			var iv  = tool.getBytesByLength(userid,access_token,userid % 16)
+			// console.log(key,iv)
+			// console.log(value,param,userid,access_token)
+				key = CryptoJS.enc.Utf8.parse(key) // 替换为你的密钥
+				iv  = CryptoJS.enc.Utf8.parse(iv) // 替换为你的初始向量
+			const decrypted = CryptoJS.AES.decrypt(value, key, {
 				iv: iv,
 				mode: CryptoJS.mode.CBC,
 				padding: CryptoJS.pad.ZeroPadding
 			})
-			//var decryptStr = decrypt.toString(CryptoJS.enc.Utf8)
-			
-			return decrypt.toString()
+			var decryptedValue = decrypted.toString(CryptoJS.enc.Utf8);
+
+			return decryptedValue
 		}
 	}
 }

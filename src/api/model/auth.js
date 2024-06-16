@@ -5,11 +5,29 @@ export default {
 	token: {
 		//url: `${config.API_URL}/token`,
 		//url: `http://127.0.0.1:4523/m1/4301866-3944438-default/login`,
-		url: `http://10.0.29.67:8888/login`,
-		
+		url: `http://192.168.2.39:8888/login`,
 		name: "登录获取TOKEN",
 		post: async function(data={}){
 			return await http.post(this.url, data);
-		}
-	}
+		},
+		del: async function(data={}){
+			return await http.delete(this.url, data);
+		},//注销用户
+	},
+	user:{
+		url: `http://192.168.2.39:8888/system/user`,
+		name: "用户信息",
+		get: async function(data={}){
+			return await http.get(this.url, data);
+		},//获取用户
+		post: async function(data={}){
+			return await http.post(this.url, data);
+		},//创建用户
+		put: async function(data={}){
+			return await http.put(this.url, data);
+		},//更新用户信息，包括重置密码
+		del: async function(data={}){
+			return await http.delete(this.url, data);
+		},//删除用户
+	},
 }

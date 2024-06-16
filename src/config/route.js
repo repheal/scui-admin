@@ -26,6 +26,46 @@
 // 	}
 // ]
 
-const routes = []
+const routes = [{
+    "name": "configuration",
+    "path": "/configuration",
+    "meta": {
+        "title": "系统配置",
+        "icon": "el-icon-setting",
+        "type": "menu"
+    },
+    "children": [
+        {
+            "path": "/configuration/user",
+            "name": "user",
+            "meta": {
+                "title": "用户管理",
+                "icon": "el-icon-user-filled",
+                "type": "menu"
+            },
+            "component": "configuration/user"
+        },
+        {
+            "path": "/configuration/role",
+            "name": "role",
+            "meta": {
+                "title": "角色管理",
+                "icon": "el-icon-notebook",
+                "type": "menu"
+            },
+            "component": "configuration/role"
+        },
+        {
+            "path": "/configuration/dept",
+            "name": "dept",
+            "meta": {
+                "title": "部门管理",
+                "icon": "sc-icon-organization",
+                "type": "menu"
+            },
+            "component": "configuration/dept"
+        }
+    ]
+}]
 
 export default routes;

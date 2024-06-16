@@ -18,9 +18,12 @@
 					<el-button @click="getYzm" :disabled="disabled">获取验证码<span v-if="disabled"> ({{time}})</span></el-button>
 				</div>
 			</el-form-item> -->
+			<el-form-item label="旧密码" prop="oldpw">
+				<el-input v-model="form.oldpw" show-password placeholder="请输入旧密码"></el-input>
+			</el-form-item>
 			<el-form-item label="新密码" prop="newpw">
 				<el-input v-model="form.newpw" show-password placeholder="请输入新密码"></el-input>
-				<div class="el-form-item-msg">请输入包含数字、大小字母与特殊符号的8~18位密码</div>
+				<div class="el-form-item-msg">请输入包含数字、大小字母与特殊符号的8~16位密码</div>
 			</el-form-item>
 			<el-form-item label="确认新密码" prop="newpw2">
 				<el-input v-model="form.newpw2" show-password placeholder="请再一次输入新密码"></el-input>
@@ -52,6 +55,7 @@
 					// user: "",
 					// phone: "",
 					// yzm: "",
+					oldpw: "",
 					newpw: "",
 					newpw2: ""
 				},
@@ -65,8 +69,21 @@
 					// yzm: [
 					// 	{ required: true, message: '请输入短信验证码'}
 					// ],
+					oldpw: [
+						{ required: true, message: '请输入旧的密码'},
+						{ min: 8, max: 16, message: "长度需要在8～16个字符", trigger: "blur" },
+					],
 					newpw: [
-						{ required: true, message: '请输入新的密码'}
+						{ required: true, message: '请输入新的密码'},
+						{ min: 8, max: 16, message: "长度需要在8～16个字符", trigger: "blur" },
+						{ pattern: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=~[\]{};':"\\|,.<>/?]).{8,16}$/ , message: '包含数字、大小字母与特殊符号的8~16位密码', trigger: "blur"},
+						{validator: (rule, value, callback) => {
+							if (value === this.form.oldpw) {
+								callback(new Error('新旧密码不能一致'));
+							}else{
+								callback();
+							}
+						}}
 					],
 					newpw2: [
 						{ required: true, message: '请再次输入新的密码'},
@@ -106,10 +123,34 @@
 			async save(){
 				var validate = await this.$refs.form.validate().catch(()=>{})
 				if(!validate){ return false }
+				const timestamp = Math.round(new Date().getTime() / 1000)//10位当前时间戳
+				var userInfo = this.$TOOL.data.get("USER_INFO")
+				console.log(this.form.oldpw,'old_password',new Date(),userInfo.user.username)
+				var data = {
+					old_password: this.$TOOL.httpvalue.AES.encrypt(this.form.oldpw,'old_password',timestamp,userInfo.user.username),
+					password: this.$TOOL.httpvalue.AES.encrypt(this.form.newpw,'password',timestamp,userInfo.user.username),
+					id: userInfo.user.id,
+				}
+				var ret = await this.$API.auth.user.put(data)
+				if([0].includes(ret.error_code) && ret.result)
+				{
+					this.$TOOL.cookie.remove("TOKEN")
+					this.stepActive = 1
+				}
+				else{
+					this.$message.error(ret.error_message)
+					return false
+				}
+			// //	alert(data.password)
+			// 	console.log(this.$TOOL.httpvalue.AES.decrypt(data.password,'password',timestamp,this.form.user))
 
-				this.stepActive = 1
+			// 	//获取token
+			// 	var ret = await this.$API.auth.token.post(data)
+			// 	console.log(ret)
+				
 			},
 			backLogin(){
+				this.$TOOL.cookie.remove("TOKEN")
 				this.$router.push({
 					path: '/login'
 				})
