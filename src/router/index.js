@@ -37,7 +37,6 @@ router.beforeEach(async (to, from, next) => {
 	document.title = to.meta.title ? `${to.meta.title} - ${config.APP_NAME}` : `${config.APP_NAME}`
 
 	let token = tool.cookie.get("TOKEN");
-
 	if(to.path === "/login"){
 		//删除路由(替换当前layout路由)
 		router.addRoute(routes[0])
@@ -47,16 +46,14 @@ router.beforeEach(async (to, from, next) => {
 		next();
 		return false;
 	}
-
-	if(routes.findIndex(r => r.path === to.path) >= 0){
-		next();
-		return false;
-	}
-
 	if(!token){
 		next({
 			path: '/login'
 		});
+		return false;
+	}
+	if(routes.findIndex(r => r.path === to.path) >= 0){
+		next();
 		return false;
 	}
 
@@ -68,6 +65,7 @@ router.beforeEach(async (to, from, next) => {
 	if(!isGetRouter){
 		let apiMenu = tool.data.get("MENU") || []
 		let userInfo = tool.data.get("USER_INFO")
+		mergeMenuApiauth(userInfo)
 		let userMenu = treeFilter(userRoutes, node => {
 			return node.meta.role ? node.meta.role.filter(item=>userInfo.role.indexOf(item)>-1).length > 0 : true
 		})
@@ -109,6 +107,76 @@ router.sc_getMenu = () => {
 	})
 	var menu = [...userMenu, ...apiMenu]
 	return menu
+}
+
+//
+/*
+* 合并前端路由和接口权限的数据
+* 1、判断模块是否有权限显示
+* 2、把模块名称赋予给菜单
+* 3、把模块权限赋予给菜单
+**/
+function mergeMenuApiauth(userInfo)
+{
+	var newUserRoute = []
+	var siteUserInfo = userInfo.user.site_app_auth
+	Object.entries(siteUserInfo).forEach(([userKey,userItem]) => {
+		// console.log('----1-----',userKey,userItem)
+		var app_auth = userItem.app_auth
+		Object.entries(userRoutes).forEach(([routeKey,routeItem]) => {
+			// console.log('----2-----',routeKey,routeItem)
+
+			if(app_auth[routeItem.meta.sign].status == 1)
+				{
+					routeItem.meta.title = app_auth[routeItem.meta.sign].name
+					if(routeItem.children)
+						{
+							var appModules = app_auth[routeItem.meta.sign].modules
+							Object.entries(routeItem.children).forEach(([childKey,childItem]) => {
+								if(appModules[childItem.meta.sign])//先判断节点存在
+									{
+										if(appModules[childItem.meta.sign].status == 1)
+											{
+												routeItem.children[childKey].meta.title = appModules[childItem.meta.sign].name
+												// routeItem.children[childKey].meta.auth_actions = appModules[childItem.meta.sign].auth_actions
+												// console.log('----dddd--',routeItem.children[childKey])
+											}
+											else//后面status 可能会=2，=0，再说
+											{
+												// alert(1)
+												routeItem.children = routeItem.children.splice(childKey, 1)
+											}
+										
+									}//节点不存在，删节点
+									else
+									{
+										alert(2)
+										routeItem.children = routeItem.children.splice(childKey, 1)
+									}
+								//
+								console.log(childKey,childItem)
+							})
+						}
+
+					newUserRoute[routeKey] = routeItem
+
+					// console.log('-----app_auth---',app_auth)
+					//说明该模块是有权限的
+				}
+			// console.log('----4-----',routeItem.meta.sign)
+			// console.log('----5-----',userItem)
+			console.log('----real-----',newUserRoute)
+			// console.log('----old-----',routeItem)
+
+		})
+		console.log(userRoutes)
+	})
+	if(newUserRoute)
+		{
+			return newUserRoute
+		}
+		return userRoutes
+		
 }
 
 //转换

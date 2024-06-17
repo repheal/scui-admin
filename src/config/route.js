@@ -26,13 +26,17 @@
 // 	}
 // ]
 
+
+
 const routes = [{
     "name": "configuration",
     "path": "/configuration",
     "meta": {
-        "title": "系统配置",
+        "title": "系统管理",
+        "sign" : "system",
         "icon": "el-icon-setting",
-        "type": "menu"
+        "type": "menu",
+
     },
     "children": [
         {
@@ -40,6 +44,7 @@ const routes = [{
             "name": "user",
             "meta": {
                 "title": "用户管理",
+                "sign" : "user",
                 "icon": "el-icon-user-filled",
                 "type": "menu"
             },
@@ -49,8 +54,9 @@ const routes = [{
             "path": "/configuration/role",
             "name": "role",
             "meta": {
-                "title": "角色管理",
-                "icon": "el-icon-notebook",
+                "title": "角色权限",
+                "sign": "role",
+                "icon": "sc-icon-organization",
                 "type": "menu"
             },
             "component": "configuration/role"
@@ -59,12 +65,24 @@ const routes = [{
             "path": "/configuration/dept",
             "name": "dept",
             "meta": {
-                "title": "部门管理",
-                "icon": "sc-icon-organization",
+                "title": "系统授权",
+                "sign": "auth",
+                "icon": "el-icon-key",
                 "type": "menu"
             },
             "component": "configuration/dept"
-        }
+        },
+        {
+            "path": "/configuration/dept",
+            "name": "log",
+            "meta": {
+                "title": "操作日志",
+                "sign": "log",
+                "icon": "el-icon-notebook",
+                "type": "menu"
+            },
+            "component": "configuration/dept"
+        },
     ]
 }]
 

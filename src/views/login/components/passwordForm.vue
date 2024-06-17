@@ -96,13 +96,8 @@ const isShow = ref(false)
 					//password: this.$TOOL.crypto.MD5(this.form.password)
 					password: this.$TOOL.httpvalue.AES.encrypt(this.form.password,'password'),
 				}
-
-			//	alert(data.password)
-			//	
-
-				//获取token
 				var ret = await this.$API.auth.token.post(data)
-				// console.log(ret)
+				 console.log('&&&&',ret)
 				// ret.error_code = 0 //先写死这个code
 				// ret.result.user.expire_date = '2024-07-01'
 				// ret.result.user.access_token = 'qqqqqqqqqqqq'
@@ -165,10 +160,10 @@ const isShow = ref(false)
 				this.$TOOL.data.set("USER_INFO", ret.result)
 				this.$TOOL.data.set("CURRENT_SITE", ret.result.user.site_app_auth[0])
 
-				console.log('------'+this.form.password)
-				console.log(this.$TOOL.httpvalue.AES.decrypt(this.form.password,'password',0,0))
+			//	console.log('------'+this.form.password)
+			//	console.log(this.$TOOL.httpvalue.AES.decrypt(this.form.password,'password',0,0))
 
-				ret.result.user.reset_pwd = 0
+			//	ret.result.user.reset_pwd = 0
 				if(ret.result.user.reset_pwd == 1)
 				{
 					this.$router.replace({

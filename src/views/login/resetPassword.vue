@@ -123,16 +123,17 @@
 			async save(){
 				var validate = await this.$refs.form.validate().catch(()=>{})
 				if(!validate){ return false }
-				const timestamp = Math.round(new Date().getTime() / 1000)//10位当前时间戳
 				var userInfo = this.$TOOL.data.get("USER_INFO")
+				console.log(userInfo)
 				console.log(this.form.oldpw,'old_password',new Date(),userInfo.user.username)
 				var data = {
-					old_password: this.$TOOL.httpvalue.AES.encrypt(this.form.oldpw,'old_password',timestamp,userInfo.user.username),
-					password: this.$TOOL.httpvalue.AES.encrypt(this.form.newpw,'password',timestamp,userInfo.user.username),
+					old_password: this.$TOOL.httpvalue.AES.encrypt(this.form.oldpw,'old_password',userInfo.user.id,userInfo.user.access_token),
+					password: this.$TOOL.httpvalue.AES.encrypt(this.form.newpw,'password',userInfo.user.id,userInfo.user.access_token),
 					id: userInfo.user.id,
 				}
+//				console.log('------',data)
 				var ret = await this.$API.auth.user.put(data)
-				if([0].includes(ret.error_code) && ret.result)
+				if([0].includes(ret.error_code) && ret.result.id == userInfo.user.id)
 				{
 					this.$TOOL.cookie.remove("TOKEN")
 					this.stepActive = 1
@@ -140,14 +141,7 @@
 				else{
 					this.$message.error(ret.error_message)
 					return false
-				}
-			// //	alert(data.password)
-			// 	console.log(this.$TOOL.httpvalue.AES.decrypt(data.password,'password',timestamp,this.form.user))
-
-			// 	//获取token
-			// 	var ret = await this.$API.auth.token.post(data)
-			// 	console.log(ret)
-				
+				}				
 			},
 			backLogin(){
 				this.$TOOL.cookie.remove("TOKEN")

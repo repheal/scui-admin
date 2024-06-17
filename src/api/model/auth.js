@@ -5,7 +5,7 @@ export default {
 	token: {
 		//url: `${config.API_URL}/token`,
 		//url: `http://127.0.0.1:4523/m1/4301866-3944438-default/login`,
-		url: `http://192.168.2.39:8888/login`,
+		url: `http://192.168.31.241:8888/login`,
 		name: "登录获取TOKEN",
 		post: async function(data={}){
 			return await http.post(this.url, data);
@@ -15,7 +15,7 @@ export default {
 		},//注销用户
 	},
 	user:{
-		url: `http://192.168.2.39:8888/system/user`,
+		url: `http://192.168.31.241:8888/system/user`,
 		name: "用户信息",
 		get: async function(data={}){
 			return await http.get(this.url, data);
