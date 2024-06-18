@@ -174,13 +174,14 @@
 				this.loading = true;
 				var reqData = {
 					[config.request.page]: this.currentPage,
-					[config.request.pageSize]: this.scPageSize,
+					[config.request.page_count]: this.scPageSize,
 					[config.request.prop]: this.prop,
 					[config.request.order]: this.order
 				}
+
 				if(this.hidePagination){
 					delete reqData[config.request.page]
-					delete reqData[config.request.pageSize]
+					delete reqData[config.request.page_count]
 				}
 				Object.assign(reqData, this.tableParams)
 

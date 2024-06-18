@@ -26,11 +26,9 @@
 // 	}
 // ]
 
-
-
 const routes = [{
-    "name": "configuration",
-    "path": "/configuration",
+    "name": "system",
+    "path": "/system",
     "meta": {
         "title": "系统管理",
         "sign" : "system",
@@ -40,7 +38,7 @@ const routes = [{
     },
     "children": [
         {
-            "path": "/configuration/user",
+            "path": "/system/user",
             "name": "user",
             "meta": {
                 "title": "用户管理",
@@ -48,10 +46,10 @@ const routes = [{
                 "icon": "el-icon-user-filled",
                 "type": "menu"
             },
-            "component": "configuration/user"
+            "component": "system/user"
         },
         {
-            "path": "/configuration/role",
+            "path": "/system/role",
             "name": "role",
             "meta": {
                 "title": "角色权限",
@@ -59,21 +57,10 @@ const routes = [{
                 "icon": "sc-icon-organization",
                 "type": "menu"
             },
-            "component": "configuration/role"
+            "component": "system/role"
         },
         {
-            "path": "/configuration/dept",
-            "name": "dept",
-            "meta": {
-                "title": "系统授权",
-                "sign": "auth",
-                "icon": "el-icon-key",
-                "type": "menu"
-            },
-            "component": "configuration/dept"
-        },
-        {
-            "path": "/configuration/dept",
+            "path": "/system/log",
             "name": "log",
             "meta": {
                 "title": "操作日志",
@@ -81,7 +68,18 @@ const routes = [{
                 "icon": "el-icon-notebook",
                 "type": "menu"
             },
-            "component": "configuration/dept"
+            "component": "system/log"
+        },
+        {
+            "path": "/system/dept",
+            "name": "dept",
+            "meta": {
+                "title": "系统授权",
+                "sign": "auth",
+                "icon": "el-icon-key",
+                "type": "menu"
+            },
+            "component": "system/dept"
         },
     ]
 }]

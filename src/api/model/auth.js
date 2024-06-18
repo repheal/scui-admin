@@ -17,8 +17,8 @@ export default {
 	user:{
 		url: `http://192.168.31.241:8888/system/user`,
 		name: "用户信息",
-		get: async function(data={}){
-			return await http.get(this.url, data);
+		get: async function(params){
+			return await http.get(this.url, params);
 		},//获取用户
 		post: async function(data={}){
 			return await http.post(this.url, data);

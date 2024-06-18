@@ -65,10 +65,10 @@ router.beforeEach(async (to, from, next) => {
 	if(!isGetRouter){
 		let apiMenu = tool.data.get("MENU") || []
 		let userInfo = tool.data.get("USER_INFO")
-		mergeMenuApiauth(userInfo)
-		let userMenu = treeFilter(userRoutes, node => {
-			return node.meta.role ? node.meta.role.filter(item=>userInfo.role.indexOf(item)>-1).length > 0 : true
-		})
+		let userMenu = mergeMenuApiauth(userInfo)
+		// let userMenu = treeFilter(userRoutes, node => {
+		// 	return node.meta.role ? node.meta.role.filter(item=>userInfo.role.indexOf(item)>-1).length > 0 : true
+		// })
 		let menu = [...userMenu, ...apiMenu]
 		var menuRouter = filterAsyncRouter(menu)
 		menuRouter = flatAsyncRoutes(menuRouter)
@@ -102,9 +102,10 @@ router.onError((error) => {
 router.sc_getMenu = () => {
 	var apiMenu = tool.data.get("MENU") || []
 	let userInfo = tool.data.get("USER_INFO")
-	let userMenu = treeFilter(userRoutes, node => {
-		return node.meta.role ? node.meta.role.filter(item=>userInfo.role.indexOf(item)>-1).length > 0 : true
-	})
+	let userMenu = mergeMenuApiauth(userInfo)
+	// let userMenu = treeFilter(userRoutes, node => {
+	// 	return node.meta.role ? node.meta.role.filter(item=>userInfo.role.indexOf(item)>-1).length > 0 : true
+	// })
 	var menu = [...userMenu, ...apiMenu]
 	return menu
 }
@@ -120,8 +121,9 @@ function mergeMenuApiauth(userInfo)
 {
 	var newUserRoute = []
 	var siteUserInfo = userInfo.user.site_app_auth
-	Object.entries(siteUserInfo).forEach(([userKey,userItem]) => {
-		// console.log('----1-----',userKey,userItem)
+	// console.log(siteUserInfo)
+	siteUserInfo.forEach(userItem => {
+		// console.log('----1-----',userItem)
 		var app_auth = userItem.app_auth
 		Object.entries(userRoutes).forEach(([routeKey,routeItem]) => {
 			// console.log('----2-----',routeKey,routeItem)
@@ -150,11 +152,9 @@ function mergeMenuApiauth(userInfo)
 									}//节点不存在，删节点
 									else
 									{
-										alert(2)
 										routeItem.children = routeItem.children.splice(childKey, 1)
 									}
-								//
-								console.log(childKey,childItem)
+								// console.log(childKey,childItem)
 							})
 						}
 
@@ -165,18 +165,17 @@ function mergeMenuApiauth(userInfo)
 				}
 			// console.log('----4-----',routeItem.meta.sign)
 			// console.log('----5-----',userItem)
-			console.log('----real-----',newUserRoute)
+			// console.log('----real-----',newUserRoute)
 			// console.log('----old-----',routeItem)
 
 		})
-		console.log(userRoutes)
+		//console.log(userRoutes)
 	})
 	if(newUserRoute)
 		{
 			return newUserRoute
 		}
-		return userRoutes
-		
+		return userRoutes	
 }
 
 //转换
@@ -238,11 +237,13 @@ function flatAsyncRoutes(routes, breadcrumb=[]) {
 }
 
 //过滤树
+/*
 function treeFilter(tree, func) {
 	return tree.map(node => ({ ...node })).filter(node => {
 		node.children = node.children && treeFilter(node.children, func)
 		return func(node) || (node.children && node.children.length)
 	})
 }
+*/
 
 export default router
