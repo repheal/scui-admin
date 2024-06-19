@@ -5,14 +5,21 @@
 				<el-container>
 					<el-header>
 						<div class="left-panel">
-							<el-date-picker v-model="date" type="daterange" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
+							<el-select v-model="application" placeholder="应用" @change="selectModules" clearable :teleported="false" style="width:150px;margin-right: 5px;">
+								<el-option v-for="item in appOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+							</el-select>
+							<el-select v-model="modules" placeholder="模块" clearable :teleported="false" style="width:150px;margin-right: 5px;">
+								<el-option v-for="item in modOptions" :key="item.value" :label="item.label" :value="item.value"></el-option>
+							</el-select>
+							<el-input v-model="search.keyword" placeholder="关键词" clearable style="width:150px;margin-right: 5px;"></el-input>
+							<el-date-picker v-model="date" type="daterange" :disabled-date="disabledDate" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
 						</div>
 						<div class="right-panel">
-						<el-button type="primary" @click="getData">查询</el-button>
+						<el-button type="primary" @click="upsearch">查询</el-button>
 						</div>
 					</el-header>
 					<el-main class="nopadding">
-						<scTable ref="table" :data="filteredData" :apiObj="apiObj" stripe highlightCurrentRow @row-click="rowClick">
+						<scTable ref="table" :apiObj="apiObj" :params="params" stripe highlightCurrentRow @row-click="rowClick">
 							<el-table-column label="级别" prop="level" width="60">
 								<template #default="scope">
 									<el-icon style="color: #409EFF;"><el-icon-info-filled /></el-icon>
@@ -53,42 +60,90 @@
 				infoDrawer: false,
 				date: [],
 				apiObj: this.$API.system.log.list,
-				filteredData:[],
+				params:{},
+				application:'',
+				appOptions:[
+						{
+							value: '',
+							label: '',
+						}
+					],
+				modules:'',
+				allModOptions:[],
+				modOptions:[],
 				search: {
 					keyword: ""
 				}
 			}
 		},
 		mounted() {
+			var current_site = this.$TOOL.data.get("CURRENT_SITE")
+				var app_auth = []
+				if(current_site && current_site.app_auth)
+				{
+					app_auth = current_site.app_auth
+					var i = 0
+					Object.entries(app_auth).forEach(([authKey,authItem]) => {
+						this.appOptions[i].value = authKey
+						this.appOptions[i].label = authItem.name
+						var j = 0
+						var allModules = []
+						Object.entries(authItem.modules).forEach(([moduleKey,moduleItem]) =>{
+							var tmp = []
+							tmp.value=moduleKey
+							tmp.label=moduleItem.name
+							allModules[j] = tmp
+							this.allModOptions[authKey] = allModules
+							j++
+						})
+						i++
+						//console.log('---dds',this.allModOptions)
+					})
+					// console.log('---d',this.appOptions)
+				}
+				this.modOptions = this.allModOptions[this.appOptions[0].value]
 		},
 		computed:{
 		},
 		methods: {
-			getData(){
-				var tag = 0
-				alert(this.date)
-				if(this.date)
-				{
-
-					tag = 1
-				}
-
-				if(tag == 1)
-				{
-					var params = []
-					alert(params)
-					// var ret = this.$API.system.log.list.get(params)
-					// alert(ret)
-				}
+			selectModules(val){
+				this.modOptions = this.allModOptions[val]
 			},
 			upsearch(){
+				if(this.date[0])
+				{
+					this.params.start_date = this.$TOOL.dateFormat(this.date[0],'yyyyMMdd')
+					this.params.stop_date  = this.$TOOL.dateFormat(this.date[1],'yyyyMMdd')
+				}
+				if(this.application)
+				{
+					this.params.app_sign = this.application
+				}
+				if(this.modules)
+				{
+					this.params.module_sign = this.modules
+				}
 
+				if(this.search.keyword)
+				{
+					this.params.keyword = this.search.keyword
+				}
+console.log('--ggggg',this.params)
+				if(this.params)
+				{
+					this.params.page = 1
+					this.params.page_count = 20
+					this.$refs.table.refresh()
+				}
 			},
 			rowClick(row){
 				this.infoDrawer = true
 				this.$nextTick(() => {
 					this.$refs.info.setData(row)
 				})
+			},
+			disabledDate(time) {
+				return time.getTime() > Date.now();
 			}
 		}
 	}

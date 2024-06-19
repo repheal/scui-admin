@@ -124,8 +124,8 @@
 				var validate = await this.$refs.form.validate().catch(()=>{})
 				if(!validate){ return false }
 				var userInfo = this.$TOOL.data.get("USER_INFO")
-				console.log(userInfo)
-				console.log(this.form.oldpw,'old_password',new Date(),userInfo.user.username)
+			//	console.log(userInfo)
+			//	console.log(this.form.oldpw,'old_password',new Date(),userInfo.user.username)
 				var data = {
 					old_password: this.$TOOL.httpvalue.AES.encrypt(this.form.oldpw,'old_password',userInfo.user.id,userInfo.user.access_token),
 					password: this.$TOOL.httpvalue.AES.encrypt(this.form.newpw,'password',userInfo.user.id,userInfo.user.access_token),

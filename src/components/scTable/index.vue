@@ -101,6 +101,7 @@
 				this.total = this.tableData.length;
 			},
 			apiObj(){
+				console.log('---pppp',this.params)
 				this.tableParams = this.params;
 				this.refresh();
 			},
@@ -186,7 +187,13 @@
 				Object.assign(reqData, this.tableParams)
 
 				try {
-					var res = await this.apiObj.get(reqData);					
+					var res = await this.apiObj.get(reqData);
+					if(res.error_code != 0)
+					{
+						this.loading = false;
+						this.emptyText = res.error_message;
+						return false;
+					}				
 				}catch(error){
 					this.loading = false;
 					this.emptyText = error.statusText;
