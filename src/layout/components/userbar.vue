@@ -126,6 +126,7 @@
 		methods: {
 			//个人信息
 			handleUser(command) {
+				//var logout = 0
 				if(command == "uc"){
 					this.$router.push({path: '/usercenter'});
 				}
@@ -136,14 +137,16 @@
 					this.$confirm('清除缓存会将系统初始化，包括登录状态、主题、语言设置等，是否继续？','提示', {
 						type: 'info',
 					}).then(() => {
-						const loading = this.$loading()
-						this.$TOOL.cookie.remove("TOKEN")
-						this.$TOOL.data.clear()
-						this.$router.replace({path: '/login'})
-						setTimeout(()=>{
-							loading.close()
-							location.reload()
-						},1000)
+						
+						this.logout(2)		
+						// const loading = this.$loading()
+						// this.$TOOL.cookie.remove("TOKEN")
+						// this.$TOOL.data.clear()
+						// this.$router.replace({path: '/login'})
+						// setTimeout(()=>{
+						// 	loading.close()
+						// 	location.reload()
+						// },1000)
 					}).catch(() => {
 						//取消
 					})
@@ -154,11 +157,32 @@
 						confirmButtonText: '退出',
 						confirmButtonClass: 'el-button--danger'
 					}).then(() => {
-						this.$TOOL.cookie.remove("TOKEN")
-						this.$router.replace({path: '/login'});
+						this.logout(1)				
 					}).catch(() => {
 						//取消退出
 					})
+				}				
+			},
+			async logout(logout){
+				if(logout)
+				{
+					var ret = await this.$API.auth.token.del()
+					if(ret.error_code == 0 &&  ret.result.id)
+					{
+						this.$TOOL.cookie.remove("TOKEN")
+						if(logout == 2)
+						{
+							const loading = this.$loading()
+							loading.close()
+							location.reload()
+							this.$TOOL.data.clear()
+						}						
+						this.$router.replace({path: '/login'})
+					}
+					else
+					{
+						this.$message.error(ret.error_message)
+					}
 				}
 			},
 			//全屏

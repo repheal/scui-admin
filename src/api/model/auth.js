@@ -10,8 +10,8 @@ export default {
 		post: async function(data={}){
 			return await http.post(this.url, data);
 		},
-		del: async function(data={}){
-			return await http.delete(this.url, data);
+		del: async function(){
+			return await http.delete(this.url);
 		},//注销用户
 	},
 	user:{

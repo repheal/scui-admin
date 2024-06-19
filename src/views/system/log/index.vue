@@ -12,7 +12,7 @@
 						</div>
 					</el-header>
 					<el-main class="nopadding">
-						<scTable ref="table" :data="filteredData" :apiObj="apiObj" :hidePagination="true" stripe highlightCurrentRow @row-click="rowClick">
+						<scTable ref="table" :data="filteredData" :apiObj="apiObj" stripe highlightCurrentRow @row-click="rowClick">
 							<el-table-column label="级别" prop="level" width="60">
 								<template #default="scope">
 									<el-icon style="color: #409EFF;"><el-icon-info-filled /></el-icon>

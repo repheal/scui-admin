@@ -119,6 +119,8 @@ router.sc_getMenu = () => {
 **/
 function mergeMenuApiauth(userInfo)
 {
+	if(!userInfo)
+		return []
 	var newUserRoute = []
 	var siteUserInfo = userInfo.user.site_app_auth
 	// console.log(siteUserInfo)

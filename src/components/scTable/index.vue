@@ -174,19 +174,19 @@
 				this.loading = true;
 				var reqData = {
 					[config.request.page]: this.currentPage,
-					[config.request.page_count]: this.scPageSize,
+					[config.request.pageSize]: this.scPageSize,
 					[config.request.prop]: this.prop,
 					[config.request.order]: this.order
 				}
 
 				if(this.hidePagination){
 					delete reqData[config.request.page]
-					delete reqData[config.request.page_count]
+					delete reqData[config.request.pageSize]
 				}
 				Object.assign(reqData, this.tableParams)
 
 				try {
-					var res = await this.apiObj.get(reqData);
+					var res = await this.apiObj.get(reqData);					
 				}catch(error){
 					this.loading = false;
 					this.emptyText = error.statusText;
@@ -199,6 +199,7 @@
 					this.emptyText = "数据格式错误";
 					return false;
 				}
+				
 				if(response.code != config.successCode){
 					this.loading = false;
 					this.emptyText = response.msg;
