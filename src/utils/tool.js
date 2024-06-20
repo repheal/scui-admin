@@ -261,7 +261,7 @@ tool.httpvalue = {
 				mode: CryptoJS.mode.CBC,
 				padding: CryptoJS.pad.ZeroPadding
 			})
-			console.log(encrypted.toString())
+			// console.log(encrypted.toString())
 			return encrypted.toString()
 		},
 		decrypt(value,param,userid = 0,access_token = 0){
@@ -295,6 +295,33 @@ tool.httpvalue = {
 			return decryptedValue
 		}
 	}
+}
+
+tool.formatAppAuth = function(result){
+	if(!result)
+		return []
+	var siteUserInfo = result.user.site_app_auth
+	Object.entries(siteUserInfo).forEach(([userKey,userItem]) => {
+		// console.log('----1-----',userItem)
+		var app_auth = userItem.app_auth
+		Object.entries(app_auth).forEach(([appKey,appItem]) => {
+			// console.log('----2-----',routeKey,routeItem)
+			if(appItem.status == 1)
+			{
+				Object.entries(appItem.modules).forEach(([moduleKey,moduleItem]) =>{
+						if(moduleItem.status != 1)
+						{
+							delete result.user.site_app_auth[userKey].app_auth[appKey].modules[moduleKey]
+						}
+				})
+			}
+			else
+			{
+				delete result.user.site_app_auth[userKey].app_auth[appKey]
+			}
+		})
+	})
+	return result
 }
 
 export default tool

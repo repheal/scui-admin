@@ -81,7 +81,8 @@ export default {
 	log: {
 		list: {
 			//url: `${config.API_URL}/token`,
-			url: `http://192.168.31.241:8888/system/log`,
+			//url: `http://192.168.31.241:8888/system/log`,
+			url: `http://10.0.29.67:8888/system/log`,
 			name: "日志列表",
 			get: async function(params){
 				return await http.get(this.url, params);

@@ -130,6 +130,7 @@ function mergeMenuApiauth(userInfo)
 		Object.entries(userRoutes).forEach(([routeKey,routeItem]) => {
 			// console.log('----2-----',routeKey,routeItem)
 
+			//以防万一，理论上是不会出现status !=1的状态
 			if(app_auth[routeItem.meta.sign].status == 1)
 				{
 					routeItem.meta.title = app_auth[routeItem.meta.sign].name
@@ -177,7 +178,7 @@ function mergeMenuApiauth(userInfo)
 		{
 			return newUserRoute
 		}
-		return userRoutes	
+		return userRoutes
 }
 
 //转换

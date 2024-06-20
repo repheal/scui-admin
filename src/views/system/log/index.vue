@@ -15,7 +15,7 @@
 							<el-date-picker v-model="date" type="daterange" :disabled-date="disabledDate" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期"></el-date-picker>
 						</div>
 						<div class="right-panel">
-						<el-button type="primary" @click="upsearch">查询</el-button>
+						<el-button type="primary" :disabled="isSearch" @click="upsearch">查询</el-button>
 						</div>
 					</el-header>
 					<el-main class="nopadding">
@@ -59,6 +59,7 @@
 			return {
 				infoDrawer: false,
 				date: [],
+				isSearch:false,
 				apiObj: this.$API.system.log.list,
 				params:{},
 				application:'',
@@ -110,30 +111,62 @@
 				this.modOptions = this.allModOptions[val]
 			},
 			upsearch(){
-				if(this.date[0])
+				this.isSearch = true
+				console.log('--ggggg',this.isSearch)
+				delete this.params.page
+				delete this.params.page_count
+				// console.log('ddddd',Object.keys(this.date).length)
+				if(Object.keys(this.date).length>0)
 				{
 					this.params.start_date = this.$TOOL.dateFormat(this.date[0],'yyyyMMdd')
 					this.params.stop_date  = this.$TOOL.dateFormat(this.date[1],'yyyyMMdd')
+				}
+				else
+				{
+					delete this.params.start_date
+					delete this.params.stop_date
 				}
 				if(this.application)
 				{
 					this.params.app_sign = this.application
 				}
+				else
+				{
+					delete this.params.app_sign
+				}
 				if(this.modules)
 				{
 					this.params.module_sign = this.modules
+				}
+				else
+				{
+					delete this.params.module_sign
 				}
 
 				if(this.search.keyword)
 				{
 					this.params.keyword = this.search.keyword
 				}
-console.log('--ggggg',this.params)
-				if(this.params)
+				else
 				{
+					delete this.params.keyword
+				}
+				if(Object.keys(this.params).length > 0)
+				{
+					console.log('--ggggg',this.params)
 					this.params.page = 1
 					this.params.page_count = 20
+					// console.log('----1',this.$refs.table.loading)
 					this.$refs.table.refresh()
+					// console.log('----2',this.$refs.table.loading)
+					if(this.$refs.table.loading)
+					{
+						this.isSearch = false
+					}
+				}
+				else
+				{
+					this.isSearch = false
 				}
 			},
 			rowClick(row){
