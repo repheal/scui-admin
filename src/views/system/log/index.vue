@@ -113,8 +113,6 @@
 			upsearch(){
 				this.isSearch = true
 				console.log('--ggggg',this.isSearch)
-				delete this.params.page
-				delete this.params.page_count
 				// console.log('ddddd',Object.keys(this.date).length)
 				if(Object.keys(this.date).length>0)
 				{
@@ -151,20 +149,13 @@
 				{
 					delete this.params.keyword
 				}
-				if(Object.keys(this.params).length > 0)
-				{
-					console.log('--ggggg',this.params)
-					this.params.page = 1
-					this.params.page_count = 20
-					// console.log('----1',this.$refs.table.loading)
-					this.$refs.table.refresh()
-					// console.log('----2',this.$refs.table.loading)
-					if(this.$refs.table.loading)
-					{
-						this.isSearch = false
-					}
-				}
-				else
+				console.log('--ggggg',this.params)
+				this.params.page = 1
+				this.params.page_count = 20
+				// console.log('----1',this.$refs.table.loading)
+				this.$refs.table.refresh()
+				// console.log('----2',this.$refs.table.loading)
+				if(this.$refs.table.loading)
 				{
 					this.isSearch = false
 				}
