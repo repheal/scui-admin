@@ -4,8 +4,8 @@ import http from "@/utils/request"
 export default {
 	token: {
 		//url: `${config.API_URL}/token`,
-		//url: `http://192.168.31.241:8888/login`,
-		url: `http://10.0.29.67:8888/login`,
+		url: `http://192.168.31.241:8888/login`,
+		//url: `http://10.0.29.67:8888/login`,
 		name: "登录获取TOKEN",
 		post: async function(data={}){
 			return await http.post(this.url, data);
@@ -15,8 +15,8 @@ export default {
 		},//注销用户
 	},
 	user:{
-		//url: `http://192.168.31.241:8888/system/user`,
-		url: `http://10.0.29.67:8888/system/user`,
+		url: `http://192.168.31.241:8888/system/user`,
+		//url: `http://10.0.29.67:8888/system/user`,
 		name: "用户信息",
 		get: async function(params){
 			return await http.get(this.url, params);

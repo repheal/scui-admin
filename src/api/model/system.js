@@ -80,14 +80,26 @@ export default {
 	},
 	log: {
 		list: {
-			//url: `${config.API_URL}/token`,
-			//url: `http://192.168.31.241:8888/system/log`,
-			url: `http://10.0.29.67:8888/system/log`,
+			//url: `${config.API_URL}/system/log`,
+			url: `http://192.168.31.241:8888/system/log`,
+			//url: `http://10.0.29.67:8888/system/log`,
 			name: "日志列表",
 			get: async function(params){
 				return await http.get(this.url, params);
 			}
 		}
+	},
+	auth:{//url: `${config.API_URL}/system/auth`,
+		url: `http://192.168.31.241:8888/system/auth`,
+		//url: `http://10.0.29.67:8888/system/auth`,
+		name: "授权",
+		post: async function(data={}){
+			return await http.post(this.url, data);
+		},
+		get: async function(params){
+			return await http.get(this.url,params);
+		},
+
 	},
 
 	table: {

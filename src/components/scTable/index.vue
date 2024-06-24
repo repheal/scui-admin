@@ -101,7 +101,7 @@
 				this.total = this.tableData.length;
 			},
 			apiObj(){
-				console.log('---pppp',this.params)
+				// console.log('---pppp',this.params)
 				this.tableParams = this.params;
 				this.refresh();
 			},

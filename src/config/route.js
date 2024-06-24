@@ -71,15 +71,15 @@ const routes = [{
             "component": "system/log"
         },
         {
-            "path": "/system/dept",
-            "name": "dept",
+            "path": "/system/auth",
+            "name": "auth",
             "meta": {
                 "title": "系统授权",
                 "sign": "auth",
                 "icon": "el-icon-key",
                 "type": "menu"
             },
-            "component": "system/dept"
+            "component": "system/auth"
         },
     ]
 }]

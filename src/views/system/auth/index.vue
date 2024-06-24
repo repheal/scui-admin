@@ -1,19 +1,45 @@
 <template>
 	<el-container>
 		<el-header>
+			<el-alert
+				ref="success"
+				:title="tips.data.title" 
+				:description="tips.data.description"
+				type="success" 
+				:closable="false"
+				v-show="tips.success"
+				show-icon></el-alert>
+			<el-alert 
+				ref="warning"
+				:title="tips.data.title" 
+				:description="tips.data.description"
+				type="warning" 
+				:closable="false"
+				v-show="tips.warning"
+				show-icon></el-alert>
+			<el-alert 
+				ref="error"
+				:title="tips.data.title" 
+				:description="tips.data.description"
+				type="error" 
+				:closable="false"
+				v-show="tips.error"
+				show-icon></el-alert>
+		
 			<div class="left-panel">
-				<el-button type="primary" icon="el-icon-plus" @click="add"></el-button>
-				<el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0" @click="batch_del"></el-button>
+				<el-button v-show="tips.warning" type="primary" plain icon="el-icon-plus" @click="add" style="height: 40px; width: 40px; margin-left: 10px;"></el-button>
+				<!-- <el-button type="danger" plain icon="el-icon-delete" :disabled="selection.length==0" @click="batch_del"></el-button> -->
 			</div>
+			<!-- 
 			<div class="right-panel">
 				<div class="right-panel-search">
 					<el-input v-model="search.keyword" placeholder="部门名称" clearable></el-input>
 					<el-button type="primary" icon="el-icon-search" @click="upsearch"></el-button>
 				</div>
-			</div>
+			</div> -->
 		</el-header>
 		<el-main class="nopadding">
-			<scTable ref="table" :apiObj="apiObj" row-key="id" @selection-change="selectionChange" hidePagination>
+			<scTable ref="table" row-key="id" @selection-change="selectionChange" hidePagination>
 				<el-table-column type="selection" width="50"></el-table-column>
 				<el-table-column label="部门名称" prop="label" width="250"></el-table-column>
 				<el-table-column label="排序" prop="sort" width="150"></el-table-column>
@@ -60,14 +86,56 @@
 				dialog: {
 					save: false
 				},
-				apiObj: this.$API.system.dept.list,
+				//apiObj: this.$API.system.auth,
 				selection: [],
 				search: {
 					keyword: null
-				}
+				},
+				tips:{
+					success:false,
+					warning:false,
+					error:false,
+					data:{
+						title:"授权提醒",
+						description:"",
+					}
+				},
 			}
 		},
+		mounted(){
+			var params=[]
+				params.page = 1
+				params.page_count = 1
+				
+				this.initData(params)
+		},
 		methods: {
+			async initData(params){
+				var ret = await this.$API.system.auth.get(params)
+				if(ret.error_code == 0 && ret.result && ret.result.data[0])
+				{
+					console.log(ret.result)
+					switch(ret.result.data[0].expire_status)
+					{
+						case 0:
+						this.tips.success = true
+							break;
+						case 1:
+						this.tips.error = true
+							break;
+						case 2:
+						this.tips.warning = true
+							break;
+						default:
+							break;
+					}
+					this.tips.data.description = ret.result.data[0].expire_prompt
+				}
+				else
+				{
+					this.$message.error(ret.error_message)
+				}
+			},
 			//添加
 			add(){
 				this.dialog.save = true
